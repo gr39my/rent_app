@@ -1,13 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>予測アプリ</title>
+    <meta charset="UTF-8">
+    <title>データベースデータ表示</title>
 </head>
 <body>
-    <h1>数値予測</h1>
-    <form action="/predict" method="post">
-        <input type="text" name="input_data" placeholder="数値を入力">
-        <button type="submit">予測</button>
-    </form>
+    <h1>データ一覧</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>種別</th>
+            <th>建物名</th>
+            <th>住所</th>
+            <th>アクセス1</th>
+            <th>アクセス2</th>
+            <th>アクセス3</th>
+            <th>築年数</th>
+            <th>階建</th>
+            <th>階</th>
+            <th>家賃</th>
+            <th>管理費・共益費</th>
+            <th>敷金</th>
+            <th>礼金</th>
+            <th>間取り</th>
+            <th>面積</th>
+            <th>URL</th>
+            <th>掲載開始日</th>
+            <th>掲載終了日</th>
+            <th>実質月額費用</th>
+            <th>実質月額費用_予測</th>
+            <!-- 他のカラム名も同様に -->
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>{{ item[4] }}</td>
+            <td>{{ item[5] }}</td>
+            <td>{{ item[6] }}</td>
+            <td>{{ item[7] }}</td>
+            <td>{{ item[8] }}</td>
+            <td>{{ item[9] }}</td>
+            <td>{{ item[10] }}</td>
+            <td>{{ item[11] }}</td>
+            <td>{{ item[12] }}</td>
+            <td>{{ item[13] }}</td>
+            <td>{{ item[14] }}</td>
+            <td>{{ item[15] }}</td>
+            <td>{{ item[16] }}</td>
+            <td>{{ item[17] }}</td>
+            <td>{{ item[18] }}</td>
+            <td>{{ item[19] }}</td>
+            <td>{{ item[20] }}</td>
+            <!-- 他のカラムデータも同様に -->
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

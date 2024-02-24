@@ -1,23 +1,37 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template
+import psycopg2
+
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+db_user = config['database']['user']
+db_password = config['database']['password']
+db_host = config['database']['host']
+db_name = config['database']['name']
+db_port = config['database']['port']
+
+
 app = Flask(__name__)
+
+conn = psycopg2.connect(
+    host=db_host,  # 'localhost' などのホスト名
+    dbname=db_name,  # データベース名
+    user=db_user,  # ユーザー名
+    password=db_password,  # パスワード
+    port=db_port  # ポート番号（PostgreSQLのデフォルトポートは5432）
+)
+
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM rental_properties;')  # 例: 'SELECT * FROM mytable;'
+    items = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template('index.html', items=items)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-# 仮のモデル予測関数
-def model_predict(input_data):
-    # ここでモデルをロードし、予測を行う
-    # 今回は仮の予測結果を返す
-    return input_data * 2
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    if request.method == 'POST':
-        input_data = request.form['input_data']
-        prediction = model_predict(int(input_data))
-        return render_template('result.html', prediction=prediction)
