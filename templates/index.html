@@ -1,62 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>データベースデータ表示</title>
-</head>
-<body>
-    <h1>データ一覧</h1>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>種別</th>
-            <th>建物名</th>
-            <th>住所</th>
-            <th>アクセス1</th>
-            <th>アクセス2</th>
-            <th>アクセス3</th>
-            <th>築年数</th>
-            <th>階建</th>
-            <th>階</th>
-            <th>家賃</th>
-            <th>管理費・共益費</th>
-            <th>敷金</th>
-            <th>礼金</th>
-            <th>間取り</th>
-            <th>面積</th>
-            <th>URL</th>
-            <th>掲載開始日</th>
-            <th>掲載終了日</th>
-            <th>実質月額費用</th>
-            <th>実質月額費用_予測</th>
-            <!-- 他のカラム名も同様に -->
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td>{{ item[0] }}</td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td>{{ item[3] }}</td>
-            <td>{{ item[4] }}</td>
-            <td>{{ item[5] }}</td>
-            <td>{{ item[6] }}</td>
-            <td>{{ item[7] }}</td>
-            <td>{{ item[8] }}</td>
-            <td>{{ item[9] }}</td>
-            <td>{{ item[10] }}</td>
-            <td>{{ item[11] }}</td>
-            <td>{{ item[12] }}</td>
-            <td>{{ item[13] }}</td>
-            <td>{{ item[14] }}</td>
-            <td>{{ item[15] }}</td>
-            <td>{{ item[16] }}</td>
-            <td>{{ item[17] }}</td>
-            <td>{{ item[18] }}</td>
-            <td>{{ item[19] }}</td>
-            <td>{{ item[20] }}</td>
-            <!-- 他のカラムデータも同様に -->
-        </tr>
-        {% endfor %}
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="mb-3">データ一覧</h1>
+    <table id="myTable" class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">種別</th>
+                <th scope="col">建物名</th>
+                <th scope="col">住所</th>
+                <th scope="col">アクセス1</th>
+                <th scope="col">アクセス2</th>
+                <th scope="col">アクセス3</th>
+                <th scope="col">築年数</th>
+                <th scope="col">階建</th>
+                <th scope="col">階</th>
+                <th scope="col">家賃</th>
+                <th scope="col">管理費・共益費</th>
+                <th scope="col">敷金</th>
+                <th scope="col">礼金</th>
+                <th scope="col">間取り</th>
+                <th scope="col">面積</th>
+                <th scope="col">URL</th>
+                <th scope="col">掲載開始日</th>
+                <th scope="col">掲載終了日</th>
+                <th scope="col">実質月額費用</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>{{ item[4] }}</td>
+                <td>{{ item[5] }}</td>
+                <td>{{ item[6] }}</td>
+                <td>{{ item[7] }}</td>
+                <td>{{ item[8] }}</td>
+                <td>{{ item[9] }}</td>
+                <td>{{ item[10] }}</td>
+                <td>{{ item[11] }}</td>
+                <td>{{ item[12] }}</td>
+                <td>{{ item[13] }}</td>
+                <td>{{ item[14] }}</td>
+                <td>{{ item[15] }}</td>
+                <td><a href="{{ item[16] }}" target="_blank">物件リンク</a></td>
+                <td>{{ item[17] }}</td>
+                <td>{{ item[18] }}</td>
+                <td>{{ item[19] | round }}</td>
+                <td>{{ item[20] }}</td>
+                <td>{{ item[21] }}</td>
+                <td>{{ item[22] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-</body>
-</html>
+</div>
+<!-- 必要なライブラリの読み込み -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable();
+    });
+</script>
+
+{% endblock %}
