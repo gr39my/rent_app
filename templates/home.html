@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid mt-5">
+    <h1 class="mb-3">データ一覧</h1>
+    <div class="table-responsive">
+        <table id="myTable" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">種別</th>
+                    <th scope="col">建物名</th>
+                    <th scope="col">住所</th>
+                    <th scope="col">アクセス1</th>
+                    <th scope="col">アクセス2</th>
+                    <th scope="col">築年数</th>
+                    <th scope="col">階建</th>
+                    <th scope="col">階</th>
+                    <th scope="col">家賃</th>
+                    <th scope="col">管理費・共益費</th>
+                    <th scope="col">敷金</th>
+                    <th scope="col">礼金</th>
+                    <th scope="col">間取り</th>
+                    <th scope="col">面積</th>
+                    <th scope="col">URL</th>
+                    <th scope="col">実質月額費用</th>
+                    <th scope="col">借りたい</th>
+                    <th scope="col">5000円安いなら借りたい</th>
+                    <th scope="col">10000円安いなら借りたい</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                    <td>{{ item[4] }}</td>
+                    <td>{{ item[5] }}</td>
+                    <td>{{ item[7] }}</td>
+                    <td>{{ item[8] }}</td>
+                    <td>{{ item[9] }}</td>
+                    <td>{{ item[10] }}</td>
+                    <td>{{ item[11] }}</td>
+                    <td>{{ item[12] }}</td>
+                    <td>{{ item[13] }}</td>
+                    <td>{{ item[14] }}</td>
+                    <td>{{ item[15] }}</td>
+                    <td><a href="{{ item[16] }}" target="_blank">物件リンク</a></td>
+                    <td>{{ item[19] | round }}</td>
+                    <!-- チェックボックスの追加 -->
+                    <td><input type="checkbox" name="want_rent[]" value="1"></td>
+                    <td><input type="checkbox" name="want_rent_if_5000_cheaper[]" value="1"></td>
+                    <td><input type="checkbox" name="want_rent_if_10000_cheaper[]" value="1"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- 必要なライブラリの読み込み -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            "searching": true, // 検索機能を有効にする
+            "ordering": true // ソート機能を有効にする
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // チェックボックスが変更されたときの処理
+        $('input[type="checkbox"]').change(function() {
+            // チェックされたかどうかを判定
+            var checked = $(this).prop('checked') ? 1 : 0;
+            // チェックされたチェックボックスの名前を取得
+            var name = $(this).attr('name');
+            // チェックボックスの値に対応する列の名前を取得
+            var column_name = name.slice(0, -2); // チェックボックス名から後ろの"[]"を削除
+            // チェックボックスの値に対応する物件のIDを取得
+            var id = $(this).closest('tr').find('td:eq(0)').text(); // 最初の列が物件のIDであると仮定
+            // サーバーにデータを送信
+            $.ajax({
+                url: '/update_preferences', // データを送信するエンドポイントのURLを指定
+                type: 'POST', // POSTリクエストでデータを送信
+                data: {
+                    property_id: id, // 物件のID
+                    column_name: column_name, // 列の名前
+                    value: checked // チェックされたかどうか
+                },
+                success: function(response) {
+                    // 成功時の処理（任意）
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    // エラー時の処理（任意）
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

@@ -1,69 +1,57 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %} - My Flask App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Bootstrap CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-    <header>
-        <!-- ナビゲーションバー -->
-    </header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <!-- 必要なCSSをここに追加 -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Your App</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <!-- ログアウトボタンを追加 -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
 
-    <footer>
-        <!-- フッター -->
-    </footer>
+        <!-- 必要なJavaScriptをここに追加 -->
+        <!-- jQueryフルバージョン -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <!-- DataTables -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+        <!-- BootstrapのJavaScript、他の依存スクリプト -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- スムーススクロールのスクリプト -->
-    <script>
-    $(document).ready(function(){
-        // "a"タグに対するクリックイベント
-        $('a').on('click', function(event) {
-            if (this.hash !== "") {
-                event.preventDefault();
-                var hash = this.hash;
-                $('html, body').animate({
-                    scrollTop: $(hash).offset().top
-                }, 800, function(){
-                    window.location.hash = hash;
+        <!-- DataTableの初期化スクリプト -->
+        <script>
+            $(document).ready(function() {
+                $('#myTable').DataTable({
+                    "destroy": true, // 既存のDataTableを破棄して再初期化
+                    "searching": true, // 検索機能を有効にする
+                    "ordering": true // ソート機能を有効にする
                 });
-            }
-        });
-    });
-    </script>
+            });
+        </script>
 
-    <!-- ダークモードの切り替え -->
-    <script>
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-        }
-    </script>
-
-    <!-- トップへ戻るボタン -->
-    <button id="topBtn">Top</button>
-    <script>
-    var mybutton = document.getElementById("topBtn");
-    window.onscroll = function() {scrollFunction()};
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            mybutton.style.display = "block";
-        } else {
-            mybutton.style.display = "none";
-        }
-    }
-    mybutton.addEventListener('click', function(){
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    });
-    </script>
-</body>
+    </body>
 </html>
