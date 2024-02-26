@@ -81,30 +81,26 @@
     $(document).ready(function() {
         // チェックボックスが変更されたときの処理
         $('input[type="checkbox"]').change(function() {
-            // チェックされたかどうかを判定
-            var checked = $(this).prop('checked') ? 1 : 0;
-            // チェックされたチェックボックスの名前を取得
-            var name = $(this).attr('name');
-            // チェックボックスの値に対応する列の名前を取得
-            var column_name = name.slice(0, -2); // チェックボックス名から後ろの"[]"を削除
-            // チェックボックスの値に対応する物件のIDを取得
-            var id = $(this).closest('tr').find('td:eq(0)').text(); // 最初の列が物件のIDであると仮定
-            // サーバーにデータを送信
+            var checked = $(this).is(':checked'); // チェックされているかの真偽値
+            var column_name = $(this).attr('name').replace('[]', ''); // "[]"を削除して列名を取得
+            var property_id = $(this).closest('tr').find('td:eq(0)').text(); // 物件IDを取得
+
+            // AJAXリクエストを送信
             $.ajax({
-                url: '/update_preferences', // データを送信するエンドポイントのURLを指定
-                type: 'POST', // POSTリクエストでデータを送信
-                data: {
-                    property_id: id, // 物件のID
-                    column_name: column_name, // 列の名前
-                    value: checked // チェックされたかどうか
-                },
+                url: '/update_preferences', // エンドポイント
+                type: 'POST', // メソッド
+                contentType: 'application/json', // コンテントタイプをJSONに設定
+                data: JSON.stringify({
+                    property_id: property_id,
+                    column_name: column_name,
+                    value: checked
+                }), // データをJSON文字列に変換
+                dataType: 'json', // 応答の形式
                 success: function(response) {
-                    // 成功時の処理（任意）
-                    console.log(response);
+                    console.log('Success:', response);
                 },
                 error: function(xhr, status, error) {
-                    // エラー時の処理（任意）
-                    console.error(error);
+                    console.error('Error:', error);
                 }
             });
         });
