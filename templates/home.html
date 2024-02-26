@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}Home{% endblock %}
 
-
 {% block content %}
 
 <div class="container-fluid mt-5">
@@ -53,9 +52,9 @@
                     <td><a href="{{ item[16] }}" target="_blank">物件リンク</a></td>
                     <td>{{ item[19] | round }}</td>
                     <!-- チェックボックスの追加 -->
-                    <td><input type="checkbox" name="want_rent[]" value="1"></td>
-                    <td><input type="checkbox" name="want_rent_if_5000_cheaper[]" value="1"></td>
-                    <td><input type="checkbox" name="want_rent_if_10000_cheaper[]" value="1"></td>
+                    <td><input type="checkbox" name="want_rent[]" value="{{ item[0] }}" {{ 'checked' if item[20] else '' }}></td>
+                    <td><input type="checkbox" name="want_rent_if_5000_cheaper[]" value="{{ item[0] }}" {{ 'checked' if item[21] else '' }}></td>
+                    <td><input type="checkbox" name="want_rent_if_10000_cheaper[]" value="{{ item[0] }}" {{ 'checked' if item[22] else '' }}></td>
                 </tr>
                 {% endfor %}
             </tbody>

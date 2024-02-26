@@ -1,4 +1,5 @@
 import logging
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import sqlite3
 from contextlib import closing
@@ -30,19 +31,23 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        session.pop('user', None)  # セッションのユーザーを一旦クリア
         username = request.form['username']
         password = request.form['password']
+
         conn = sqlite3.connect('rent_app.sqlite3')
         cur = conn.cursor()
-        cur.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+        cur.execute('SELECT password FROM users WHERE username = ?', (username,))
         user = cur.fetchone()
         conn.close()
-        if user:
-            session['user'] = user[0]  # ユーザー名をセッションに格納
+
+        if user and check_password_hash(user[0], password):
+            # パスワードが一致する場合の処理（例: セッションにユーザー情報を格納）
+            session['user'] = username
             return redirect(url_for('home'))
         else:
-            return 'Invalid username/password. Please try again.'
+            # パスワードが一致しない場合の処理
+            return 'Invalid username or password'
+
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -50,9 +55,11 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        hashed_password = generate_password_hash(password)  # パスワードをハッシュ化
+
         conn = sqlite3.connect('rent_app.sqlite3')
         cur = conn.cursor()
-        cur.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+        cur.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
         conn.commit()
         conn.close()
         return redirect(url_for('login'))
@@ -61,17 +68,34 @@ def register():
 @app.route('/home')
 def home():
     if 'user' in session:
-        # データ読み込み
-        conn = sqlite3.connect('rent_app.sqlite3') # SQLite データベースに接続
+        username = session['user']
+        conn = sqlite3.connect('rent_app.sqlite3')
         cur = conn.cursor()
-        cur.execute('SELECT * FROM rental_properties')  # テーブルからデータを取得
+        
+        # レンタル物件の情報を取得
+        cur.execute('SELECT * FROM rental_properties')
         items = cur.fetchall()
-        conn.close() # データベース接続をクローズ
+
+        # ユーザーの好みを取得
+        cur.execute('SELECT property_id, want_rent, want_rent_if_5000_cheaper, want_rent_if_10000_cheaper FROM property_preferences WHERE username = ?', (username,))
+        preferences = {row[0]: row[1:] for row in cur.fetchall()}
         
-        # TODO: ユーザーの好みに基づいて、チェック状態を復元するロジックをここに追加する必要があります
-        
-        return render_template('home.html', user=session['user'], items=items)
+        # アイテムリストにユーザーの好みを反映
+        updated_items = []
+        for item in items:
+            property_id = item[0]
+            if property_id in preferences:
+                # ユーザーの好みを反映させたアイテムを作成
+                updated_item = item + preferences[property_id]
+            else:
+                # ユーザーの好みが設定されていない場合は、デフォルト値を使用
+                updated_item = item + (False, False, False)
+            updated_items.append(updated_item)
+
+        conn.close()
+        return render_template('home.html', user=username, items=updated_items)
     return redirect(url_for('login'))
+
 
 @app.route('/update_preferences', methods=['POST'])
 def update_preferences():
