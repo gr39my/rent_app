@@ -1,2 +1,4 @@
 config.ini
 rent_app.sqlite3
+scraped_data.csv
+scraped_data_forML.csv
