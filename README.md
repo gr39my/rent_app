@@ -1,7 +1,7 @@
 # 概要
 母校である名古屋市立大学に4年間通う場合に、おすすめできるマンション・アパートを検索できるアプリを作成しました。
 
-pythonanywhereでデプロイしています
+pythonanywhereでデプロイしています（現在は非公開にしています）
 http://arimaryo.pythonanywhere.com/login
 
 
